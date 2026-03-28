@@ -5,454 +5,195 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="theme-color" content="#080810"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="manifest" href="manifest.json"/>
 <title>DayLock</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg:       #080810;
-  --s1:       #0f0f1a;
-  --s2:       #161625;
-  --border:   rgba(255,255,255,0.07);
-  --accent:   #e8ff47;
-  --teal:     #47ffe0;
-  --pink:     #ff47b8;
-  --text:     #f0f0f8;
-  --muted:    #5a5a80;
-  --warn:     #ffb347;
-  --danger:   #ff5a5a;
-  --radius:   14px;
-}
+:root{--bg:#080810;--s1:#0f0f1a;--s2:#161625;--border:rgba(255,255,255,0.07);--accent:#e8ff47;--teal:#47ffe0;--pink:#ff47b8;--text:#f0f0f8;--muted:#5a5a80;--warn:#ffb347;--danger:#ff5a5a;--r:14px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;}
-body{
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
-}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(232,255,71,.05) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(71,255,224,.04) 0%,transparent 70%);}
 
-/* ── BG GLOW ── */
-.bg-glow{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(232,255,71,0.04) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 80% 80%, rgba(71,255,224,0.04) 0%, transparent 70%);
-}
+/* SCREENS */
+.screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:opacity .45s ease,transform .45s ease;}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(28px);}
 
-/* ── SCREENS ── */
-.screen{
-  position:fixed;inset:0;z-index:10;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:24px;
-  transition:opacity .5s ease, transform .5s ease;
-}
-.screen.hidden{opacity:0;pointer-events:none;transform:translateY(30px);}
-
-/* ── ONBOARDING ── */
+/* ONBOARDING */
 #onboarding{background:var(--bg);}
-
-.ob-step{
-  width:100%;max-width:460px;
-  display:none;flex-direction:column;gap:28px;
-  animation:fadeUp .5s ease both;
-}
+.ob-step{width:100%;max-width:460px;display:none;flex-direction:column;gap:26px;animation:fadeUp .5s ease both;}
 .ob-step.active{display:flex;}
-
-.ob-num{
-  font-family:'DM Mono',monospace;
-  font-size:.75rem;color:var(--muted);
-  letter-spacing:.15em;
-}
-.ob-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2.4rem,8vw,4rem);
-  line-height:1;
-  letter-spacing:.02em;
-}
+.ob-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.15em;}
+.ob-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,8vw,4rem);line-height:1;}
 .ob-title span{color:var(--accent);}
-.ob-sub{font-size:.95rem;color:var(--muted);line-height:1.6;margin-top:-10px;}
-
-.ob-input{
-  background:var(--s2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:16px 20px;
-  font-family:'Outfit',sans-serif;
-  font-size:1rem;
-  color:var(--text);
-  outline:none;
-  width:100%;
-  transition:border-color .2s;
-}
+.ob-sub{font-size:.92rem;color:var(--muted);line-height:1.6;margin-top:-10px;}
+.ob-input{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--text);outline:none;width:100%;transition:border-color .2s;}
 .ob-input:focus{border-color:var(--accent);}
 .ob-input::placeholder{color:var(--muted);}
 input[type="time"].ob-input{font-family:'DM Mono',monospace;}
 input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(.4);}
-
-.ob-btn{
-  background:var(--accent);
-  color:var(--bg);
-  border:none;
-  border-radius:var(--radius);
-  padding:16px 28px;
-  font-family:'Outfit',sans-serif;
-  font-size:1rem;font-weight:700;
-  cursor:pointer;
-  transition:all .2s;
-  width:100%;
-  letter-spacing:.02em;
-}
+.ob-btn{background:var(--accent);color:var(--bg);border:none;border-radius:var(--r);padding:16px 28px;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;width:100%;}
 .ob-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(232,255,71,.25);}
-.ob-btn:active{transform:none;}
-.ob-btn.secondary{
-  background:transparent;
-  border:1px solid var(--border);
-  color:var(--muted);
-  margin-top:-10px;
-}
-.ob-btn.secondary:hover{border-color:var(--muted);color:var(--text);box-shadow:none;}
-
-/* dot progress */
+.ob-btn.sec{background:transparent;border:1px solid var(--border);color:var(--muted);margin-top:-10px;}
+.ob-btn.sec:hover{border-color:var(--muted);color:var(--text);box-shadow:none;}
 .ob-dots{display:flex;gap:8px;justify-content:center;}
-.ob-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--s2);border:1px solid var(--border);
-  transition:all .3s;
-}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--s2);border:1px solid var(--border);transition:all .3s;}
 .ob-dot.active{background:var(--accent);border-color:var(--accent);width:24px;border-radius:4px;}
 
-/* ── RETURN SCREEN ── */
+/* GOOGLE SIGN IN */
+.google-btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  background:#fff;color:#1f1f1f;
+  border:none;border-radius:var(--r);
+  padding:16px 28px;width:100%;
+  font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.google-btn:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(255,255,255,.15);}
+.google-btn svg{width:20px;height:20px;flex-shrink:0;}
+
+/* RETURN */
 #returnScreen{background:var(--bg);z-index:11;}
-.return-card{
-  width:100%;max-width:420px;
-  display:flex;flex-direction:column;gap:20px;
-  animation:fadeUp .5s ease both;
-}
-.return-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2rem,7vw,3.5rem);
-  line-height:1;
-}
-.return-name span{color:var(--accent);}
-.return-quote{
-  font-size:.95rem;
-  color:var(--muted);
-  line-height:1.7;
-  font-style:italic;
-  border-left:2px solid var(--accent);
-  padding-left:14px;
-}
-.return-choice{display:flex;flex-direction:column;gap:10px;}
-.choice-btn{
-  background:var(--s2);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:14px 18px;
-  font-family:'Outfit',sans-serif;
-  font-size:.95rem;font-weight:500;
-  color:var(--text);
-  cursor:pointer;
-  transition:all .2s;
-  text-align:left;
-  display:flex;align-items:center;gap:12px;
-}
-.choice-btn .ci{font-size:1.2rem;}
+.ret-card{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px;animation:fadeUp .5s ease both;}
+.ret-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,3.5rem);line-height:1;}
+.ret-name span{color:var(--accent);}
+.ret-quote{font-size:.92rem;color:var(--muted);line-height:1.7;font-style:italic;border-left:2px solid var(--accent);padding-left:14px;}
+.choice-btn{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;font-family:'Outfit',sans-serif;font-size:.92rem;font-weight:500;color:var(--text);cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:12px;width:100%;}
 .choice-btn:hover{border-color:var(--accent);background:rgba(232,255,71,.05);}
 
-/* ── MAIN APP ── */
-#app{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;
-  min-height:100vh;
-}
+/* APP */
+#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
 #app.hidden{display:none;}
-
-/* header */
-.app-header{
-  position:sticky;top:0;z-index:50;
-  background:rgba(8,8,16,.88);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:14px 20px;
-  display:flex;align-items:center;gap:12px;
-}
-.app-logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.5rem;letter-spacing:.05em;
-}
+.app-header{position:sticky;top:0;z-index:50;background:rgba(8,8,16,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;gap:10px;}
+.app-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em;}
 .app-logo span{color:var(--accent);}
-.app-clock{
-  font-family:'DM Mono',monospace;
-  font-size:.85rem;color:var(--teal);
-  margin-left:auto;
-}
-.notif-pill{
-  background:var(--s2);
-  border:1px solid var(--border);
-  padding:6px 12px;border-radius:20px;
-  font-size:.75rem;font-weight:600;
-  cursor:pointer;transition:all .2s;
-  white-space:nowrap;
-}
+.app-clock{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--teal);margin-left:auto;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.notif-pill{background:var(--s2);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .notif-pill:hover{border-color:var(--accent);color:var(--accent);}
 .notif-pill.on{border-color:var(--teal);color:var(--teal);}
+.user-avatar{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);cursor:pointer;object-fit:cover;}
+.user-avatar-placeholder{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;color:var(--muted);}
 
-/* content */
-.app-content{
-  flex:1;
-  max-width:680px;
-  width:100%;
-  margin:0 auto;
-  padding:24px 18px 100px;
-  position:relative;z-index:1;
-}
+.app-content{flex:1;max-width:680px;width:100%;margin:0 auto;padding:24px 18px 100px;position:relative;z-index:1;}
 
-/* hero greeting */
-.hero{margin-bottom:24px;animation:fadeUp .5s ease both;}
-.hero-greeting{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2rem,6vw,3rem);
-  line-height:1.05;
-  letter-spacing:.02em;
-}
-.hero-greeting em{color:var(--accent);font-style:normal;}
-.hero-quote{
-  margin-top:8px;
-  font-size:.85rem;color:var(--muted);
-  font-style:italic;
-  border-left:2px solid var(--s2);
-  padding-left:10px;
-  line-height:1.6;
-}
-.hero-date{
-  margin-top:6px;
-  font-family:'DM Mono',monospace;
-  font-size:.8rem;color:var(--muted);
-}
+/* SYNC BANNER */
+.sync-banner{background:rgba(71,255,224,.06);border:1px solid rgba(71,255,224,.15);border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:.78rem;color:var(--teal);display:flex;align-items:center;gap:8px;}
+.sync-banner.hidden{display:none;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s ease infinite;}
 
-/* streak + progress row */
-.stats-row{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;margin-bottom:20px;
-  animation:fadeUp .5s .08s ease both;
-}
-.stat-card{
-  background:var(--s1);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:14px 16px;
-}
-.stat-label{font-size:.7rem;color:var(--muted);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
-.stat-value{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.8rem;letter-spacing:.02em;
-}
-.stat-value.accent{color:var(--accent);}
-.stat-value.teal{color:var(--teal);}
-.prog-bar-bg{background:var(--s2);height:5px;border-radius:10px;margin-top:8px;overflow:hidden;}
-.prog-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--teal),var(--accent));transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+/* hero */
+.hero{margin-bottom:22px;animation:fadeUp .5s ease both;}
+.hero-greeting{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,6vw,3rem);line-height:1.05;letter-spacing:.02em;}
+.hero-quote{margin-top:8px;font-size:.83rem;color:var(--muted);font-style:italic;border-left:2px solid var(--s2);padding-left:10px;line-height:1.6;}
+.hero-date{margin-top:5px;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);}
 
-/* add task */
-.add-card{
-  background:var(--s1);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:18px;
-  margin-bottom:20px;
-  animation:fadeUp .5s .14s ease both;
-}
-.add-card-head{
-  font-size:.7rem;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:14px;
-}
+/* stats */
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;animation:fadeUp .5s .07s ease both;}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.stat-label{font-size:.68rem;color:var(--muted);font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.02em;}
+.stat-value.a{color:var(--accent);}.stat-value.t{color:var(--teal);}
+.prog-bg{background:var(--s2);height:5px;border-radius:10px;margin-top:8px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--teal),var(--accent));transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+
+/* add card */
+.add-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:18px;animation:fadeUp .5s .13s ease both;}
+.add-head{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
 .add-fields{display:flex;flex-direction:column;gap:10px;}
-.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:420px){.fields-row{grid-template-columns:1fr;}}
-
-.field-wrap{display:flex;flex-direction:column;gap:5px;}
-.field-label{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.05em;}
-.field-input{
-  background:var(--s2);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:11px 14px;
-  font-family:'Outfit',sans-serif;
-  font-size:.9rem;
-  color:var(--text);
-  outline:none;
-  width:100%;
-  transition:border-color .2s;
-}
-.field-input:focus{border-color:var(--accent);}
-.field-input::placeholder{color:var(--muted);}
-input[type="time"].field-input{font-family:'DM Mono',monospace;}
-input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(.4);}
-
-.add-row{display:flex;gap:10px;align-items:stretch;}
-.add-row .field-wrap{flex:1;}
-.add-task-btn{
-  background:var(--accent);color:var(--bg);
-  border:none;border-radius:10px;
-  padding:11px 20px;
-  font-family:'Outfit',sans-serif;
-  font-weight:700;font-size:.9rem;
-  cursor:pointer;transition:all .2s;
-  white-space:nowrap;align-self:flex-end;
-}
-.add-task-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(232,255,71,.2);}
-
-/* task count indicator */
-.task-count-hint{
-  font-size:.75rem;color:var(--muted);
-  text-align:right;margin-top:4px;
-}
-.task-count-hint.warn{color:var(--warn);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:420px){.frow{grid-template-columns:1fr;}}
+.fw{display:flex;flex-direction:column;gap:5px;}
+.fl{font-size:.7rem;color:var(--muted);font-weight:600;letter-spacing:.05em;}
+.fi{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Outfit',sans-serif;font-size:.9rem;color:var(--text);outline:none;width:100%;transition:border-color .2s;}
+.fi:focus{border-color:var(--accent);}
+.fi::placeholder{color:var(--muted);}
+input[type="time"].fi{font-family:'DM Mono',monospace;}
+.add-row{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;}
+.count-hint{font-size:.72rem;color:var(--muted);}
+.add-btn{background:var(--accent);color:var(--bg);border:none;border-radius:10px;padding:11px 22px;font-family:'Outfit',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(232,255,71,.2);}
 
 /* schedule */
-.sched-head{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:12px;
-  animation:fadeUp .5s .18s ease both;
-}
-.sched-head h2{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
-.clear-all{
-  background:none;border:1px solid var(--border);
-  color:var(--danger);padding:4px 12px;
-  border-radius:6px;font-size:.72rem;
-  font-family:'Outfit',sans-serif;font-weight:600;
-  cursor:pointer;transition:all .2s;
-}
+.sched-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;animation:fadeUp .5s .17s ease both;}
+.sched-head h2{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.clear-all{background:none;border:1px solid var(--border);color:var(--danger);padding:4px 12px;border-radius:6px;font-size:.7rem;font-family:'Outfit',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;}
 .clear-all:hover{background:var(--danger);color:var(--bg);}
-
-.task-list{display:flex;flex-direction:column;gap:8px;animation:fadeUp .5s .22s ease both;}
-
-.empty-wrap{
-  text-align:center;padding:50px 20px;color:var(--muted);
-}
+.task-list{display:flex;flex-direction:column;gap:8px;animation:fadeUp .5s .2s ease both;}
+.empty-wrap{text-align:center;padding:50px 20px;color:var(--muted);}
 .empty-wrap .eico{font-size:2.5rem;margin-bottom:12px;}
-.empty-wrap p{font-size:.88rem;line-height:1.7;}
+.empty-wrap p{font-size:.86rem;line-height:1.7;}
 
 /* task card */
-.task-card{
-  background:var(--s1);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:13px 16px;
-  display:flex;align-items:center;gap:12px;
-  position:relative;overflow:hidden;
-  transition:border-color .25s, background .25s;
-}
-.task-card::after{
-  content:'';position:absolute;
-  left:0;top:0;bottom:0;width:3px;
-  border-radius:0 2px 2px 0;
-  background:var(--muted);
-  transition:background .3s;
-}
+.task-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;transition:border-color .25s,background .25s;}
+.task-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0;background:var(--muted);transition:background .3s;}
 .task-card.s-now::after{background:var(--accent);}
 .task-card.s-soon::after{background:var(--warn);}
 .task-card.s-up::after{background:var(--teal);}
 .task-card.s-done{opacity:.4;}
 .task-card.s-done::after{background:var(--muted);}
 .task-card.s-now{border-color:rgba(232,255,71,.15);background:rgba(232,255,71,.03);}
-
-.t-check{
-  width:22px;height:22px;flex-shrink:0;
-  border:2px solid var(--border);border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:.75rem;
-  transition:all .2s;background:transparent;color:transparent;
-}
+.t-check{width:22px;height:22px;flex-shrink:0;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;transition:all .2s;background:transparent;color:transparent;}
 .task-card.s-done .t-check{background:var(--teal);border-color:var(--teal);color:var(--bg);}
 .t-check:hover{border-color:var(--teal);}
-
-.t-time-col{flex-shrink:0;min-width:88px;}
-.t-time{
-  font-family:'DM Mono',monospace;
-  font-size:.78rem;color:var(--accent);font-weight:500;
-}
-.t-badge{
-  display:inline-block;
-  font-size:.62rem;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;margin-top:3px;
-  padding:2px 7px;border-radius:4px;
-}
+.t-tcol{flex-shrink:0;min-width:88px;}
+.t-time{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--accent);font-weight:500;}
+.t-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-top:3px;padding:2px 7px;border-radius:4px;}
 .b-now{background:rgba(232,255,71,.12);color:var(--accent);}
 .b-soon{background:rgba(255,179,71,.12);color:var(--warn);}
 .b-up{background:rgba(71,255,224,.08);color:var(--teal);}
 .b-done{background:rgba(90,90,128,.12);color:var(--muted);}
-
 .t-body{flex:1;min-width:0;}
-.t-name{
-  font-size:.93rem;font-weight:600;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.t-name{font-size:.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .task-card.s-done .t-name{text-decoration:line-through;color:var(--muted);}
-.t-dur{font-size:.72rem;color:var(--muted);margin-top:2px;}
-
-.t-del{
-  background:none;border:none;color:var(--muted);
-  font-size:.9rem;cursor:pointer;padding:4px;
-  border-radius:4px;transition:color .2s;flex-shrink:0;
-}
+.t-dur{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.t-del{background:none;border:none;color:var(--muted);font-size:.85rem;cursor:pointer;padding:4px;border-radius:4px;transition:color .2s;flex-shrink:0;}
 .t-del:hover{color:var(--danger);}
 
-/* bottom nav bar feel */
-.app-footer{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(8,8,16,.95);
-  border-top:1px solid var(--border);
-  padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));
-  display:flex;justify-content:center;
-  z-index:50;
-}
-.wake-hint{
-  font-size:.8rem;color:var(--muted);
-  display:flex;align-items:center;gap:8px;
-}
-.wake-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--teal);
-  animation:pulse 2s ease infinite;
-}
+/* footer */
+.app-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,16,.95);border-top:1px solid var(--border);padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:50;}
+.wake-hint{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.wake-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse 2s ease infinite;}
+
+/* ALARM OVERLAY */
+#alarmOverlay{position:fixed;inset:0;z-index:1000;background:rgba(8,8,16,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:32px;opacity:0;pointer-events:none;transition:opacity .4s ease;}
+#alarmOverlay.active{opacity:1;pointer-events:all;}
+.alarm-ring{width:120px;height:120px;border-radius:50%;background:rgba(232,255,71,.08);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:3rem;animation:ringPulse 1s ease infinite;}
+.alarm-time{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,12vw,6rem);color:var(--accent);letter-spacing:.05em;line-height:1;}
+.alarm-task{font-size:clamp(1.1rem,4vw,1.6rem);font-weight:600;text-align:center;max-width:400px;}
+.alarm-sub{font-size:.88rem;color:var(--muted);text-align:center;}
+.alarm-actions{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;}
+.alarm-confirm{background:var(--accent);color:var(--bg);border:none;border-radius:var(--r);padding:18px 28px;font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.alarm-confirm:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(232,255,71,.3);}
+.alarm-snooze{background:transparent;border:1px solid var(--border);border-radius:var(--r);padding:14px 28px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s;}
+.alarm-snooze:hover{border-color:var(--warn);color:var(--warn);}
+.alarm-ripple{position:absolute;border-radius:50%;background:rgba(232,255,71,.06);animation:ripple 2s ease infinite;pointer-events:none;}
+
+/* USER MENU */
+#userMenu{position:fixed;top:60px;right:20px;z-index:200;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;min-width:220px;display:none;animation:fadeUp .25s ease both;}
+#userMenu.open{display:block;}
+.um-name{font-weight:600;font-size:.9rem;margin-bottom:2px;}
+.um-email{font-size:.75rem;color:var(--muted);margin-bottom:14px;}
+.um-btn{background:none;border:1px solid var(--border);color:var(--danger);padding:8px 14px;border-radius:8px;font-size:.8rem;font-family:'Outfit',sans-serif;font-weight:600;cursor:pointer;width:100%;transition:all .2s;}
+.um-btn:hover{background:var(--danger);color:var(--bg);}
+
+/* loading */
+#loadingScreen{background:var(--bg);}
+.loader{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 /* toast */
-.toast-wrap{
-  position:fixed;bottom:70px;left:50%;
-  transform:translateX(-50%);
-  z-index:9999;display:flex;flex-direction:column;gap:8px;
-  align-items:center;pointer-events:none;
-}
-.toast{
-  background:var(--s2);border:1px solid var(--border);
-  color:var(--text);padding:11px 20px;
-  border-radius:10px;font-size:.84rem;font-weight:600;
-  white-space:nowrap;pointer-events:auto;
-  box-shadow:0 8px 32px rgba(0,0,0,.5);
-  animation:toastIn .3s ease both;
-}
+.toast-wrap{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;}
+.toast{background:var(--s2);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:600;white-space:nowrap;pointer-events:auto;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:toastIn .3s ease both;}
 .toast.ok{border-color:var(--teal);color:var(--teal);}
 .toast.warn{border-color:var(--warn);color:var(--warn);}
 .toast.info{border-color:var(--accent);color:var(--accent);}
 
-/* anims */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(22px);}
-  to{opacity:1;transform:translateY(0);}
-}
-@keyframes toastIn{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-@keyframes pulse{
-  0%,100%{opacity:1;}50%{opacity:.3;}
-}
-.pulse{animation:pulse 2s ease infinite;}
-
-/* scrollbar */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes ringPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,255,71,.3);}50%{transform:scale(1.06);box-shadow:0 0 0 20px rgba(232,255,71,0);}}
+@keyframes ripple{0%{width:120px;height:120px;opacity:.4;}100%{width:400px;height:400px;opacity:0;}}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--s2);border-radius:2px;}
@@ -461,586 +202,652 @@ input[type="time"]::-webkit-calendar-picker-indicator{filter:invert(.4);}
 <body>
 <div class="bg-glow"></div>
 
-<!-- ══════════════ ONBOARDING ══════════════ -->
-<div class="screen" id="onboarding">
+<!-- LOADING -->
+<div class="screen" id="loadingScreen">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;">Day<span style="color:var(--accent)">Lock</span></div>
+    <div class="loader"></div>
+  </div>
+</div>
 
-  <!-- Step 1: Name -->
+<!-- ONBOARDING -->
+<div class="screen hidden" id="onboarding">
   <div class="ob-step active" id="step1">
-    <div class="ob-dots">
-      <div class="ob-dot active"></div><div class="ob-dot"></div>
-      <div class="ob-dot"></div><div class="ob-dot"></div>
-    </div>
-    <div>
-      <div class="ob-num">01 / 04</div>
-      <div class="ob-title">What's your<br><span>name?</span></div>
-      <div class="ob-sub">We'll greet you every morning.</div>
-    </div>
+    <div class="ob-dots"><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <div><div class="ob-num">01 / 04</div><div class="ob-title">What's your<br><span>name?</span></div><div class="ob-sub">We'll greet you every morning.</div></div>
     <input class="ob-input" id="ob_name" type="text" placeholder="Your first name…" maxlength="30" autocomplete="off"/>
     <button class="ob-btn" onclick="obNext(1)">Continue →</button>
   </div>
-
-  <!-- Step 2: Wake time -->
   <div class="ob-step" id="step2">
-    <div class="ob-dots">
-      <div class="ob-dot"></div><div class="ob-dot active"></div>
-      <div class="ob-dot"></div><div class="ob-dot"></div>
-    </div>
-    <div>
-      <div class="ob-num">02 / 04</div>
-      <div class="ob-title">When do<br><span>you wake?</span></div>
-      <div class="ob-sub">We'll send a morning nudge 10 mins before to plan your day.</div>
-    </div>
+    <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <div><div class="ob-num">02 / 04</div><div class="ob-title">When do<br><span>you wake?</span></div><div class="ob-sub">We'll nudge you 10 mins before to plan your day.</div></div>
     <input class="ob-input" id="ob_wake" type="time" value="07:00"/>
     <button class="ob-btn" onclick="obNext(2)">Continue →</button>
   </div>
-
-  <!-- Step 3: Inspiration -->
   <div class="ob-step" id="step3">
-    <div class="ob-dots">
-      <div class="ob-dot"></div><div class="ob-dot"></div>
-      <div class="ob-dot active"></div><div class="ob-dot"></div>
-    </div>
-    <div>
-      <div class="ob-num">03 / 04</div>
-      <div class="ob-title">What keeps<br><span>you going?</span></div>
-      <div class="ob-sub">A quote, a goal, a person. We'll show it every morning.</div>
-    </div>
+    <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
+    <div><div class="ob-num">03 / 04</div><div class="ob-title">What keeps<br><span>you going?</span></div><div class="ob-sub">A quote, a goal, a name. Shown every morning.</div></div>
     <input class="ob-input" id="ob_quote" type="text" placeholder="e.g. "Stay consistent, not perfect"" maxlength="120"/>
     <button class="ob-btn" onclick="obNext(3)">Continue →</button>
-    <button class="ob-btn secondary" onclick="obSkipQuote()">Skip for now</button>
+    <button class="ob-btn sec" onclick="obSkip()">Skip for now</button>
   </div>
-
-  <!-- Step 4: Reminder count -->
   <div class="ob-step" id="step4">
-    <div class="ob-dots">
-      <div class="ob-dot"></div><div class="ob-dot"></div>
-      <div class="ob-dot"></div><div class="ob-dot active"></div>
-    </div>
-    <div>
-      <div class="ob-num">04 / 04</div>
-      <div class="ob-title">How many<br><span>reminders</span><br>today?</div>
-      <div class="ob-sub">You can always add more later. Just give us a starting number.</div>
-    </div>
-    <input class="ob-input" id="ob_count" type="number" min="1" max="20" placeholder="e.g. 5" style="font-family:'DM Mono',monospace;font-size:1.4rem;text-align:center;"/>
-    <button class="ob-btn" onclick="obFinish()">Let's go 🔒</button>
+    <div class="ob-dots"><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div></div>
+    <div><div class="ob-num">04 / 04</div><div class="ob-title">Sign in to<br><span>sync</span> your<br>schedule</div><div class="ob-sub">Google sign-in saves your tasks across all devices. Free forever.</div></div>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <button class="ob-btn sec" onclick="skipAuth()">Skip — use without account</button>
   </div>
-
 </div>
 
-<!-- ══════════════ RETURN SCREEN ══════════════ -->
+<!-- RETURN -->
 <div class="screen hidden" id="returnScreen">
-  <div class="return-card">
+  <div class="ret-card">
     <div>
-      <div style="font-size:.75rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;" id="ret_timeLabel">Good morning</div>
-      <div class="return-name">Welcome back,<br><span id="ret_name">—</span> 👋</div>
+      <div style="font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;" id="ret_label">Good morning</div>
+      <div class="ret-name">Welcome back,<br><span id="ret_name">—</span> 👋</div>
     </div>
-    <div class="return-quote" id="ret_quote" style="display:none"></div>
-    <div style="font-size:.85rem;color:var(--muted);">What would you like to do?</div>
-    <div class="return-choice">
-      <button class="choice-btn" onclick="goToApp(false)">
-        <span class="ci">📋</span> Start fresh — plan today's schedule
-      </button>
-      <button class="choice-btn" onclick="goToApp(true)">
-        <span class="ci">♻️</span> Reuse yesterday's schedule
-      </button>
+    <div class="ret-quote" id="ret_quote" style="display:none"></div>
+    <div style="font-size:.83rem;color:var(--muted);">What would you like to do?</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="choice-btn" onclick="goApp(false)"><span>📋</span> Fresh start — plan today</button>
+      <button class="choice-btn" onclick="goApp(true)"><span>♻️</span> Reuse yesterday's schedule</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ APP ══════════════ -->
+<!-- APP -->
 <div id="app" class="hidden">
   <header class="app-header">
     <div class="app-logo">Day<span>Lock</span></div>
     <div class="app-clock" id="liveClock">--:--</div>
-    <button class="notif-pill" id="notifBtn" onclick="reqNotif()">🔔 Allow alerts</button>
+    <div class="header-right">
+      <button class="notif-pill" id="notifBtn" onclick="reqNotif()">🔔 Alerts</button>
+      <div id="userAvatarWrap" onclick="toggleUserMenu()" style="cursor:pointer;"></div>
+    </div>
   </header>
 
   <div class="app-content">
+    <div class="sync-banner hidden" id="syncBanner">
+      <div class="sync-dot"></div>
+      <span id="syncMsg">Synced to cloud ✓</span>
+    </div>
 
     <div class="hero">
-      <div class="hero-greeting" id="heroGreeting">Lock in.</div>
+      <div class="hero-greeting" id="heroGreet">Lock in.</div>
       <div class="hero-quote" id="heroQuote" style="display:none"></div>
       <div class="hero-date" id="heroDate"></div>
     </div>
 
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-label">🔥 Streak</div>
-        <div class="stat-value accent" id="streakVal">0</div>
-        <div style="font-size:.72rem;color:var(--muted);">days</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">✅ Done today</div>
-        <div class="stat-value teal" id="doneVal">0 / 0</div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
-      </div>
+      <div class="stat-card"><div class="stat-label">🔥 Streak</div><div class="stat-value a" id="streakVal">0</div><div style="font-size:.7rem;color:var(--muted)">days</div></div>
+      <div class="stat-card"><div class="stat-label">✅ Done today</div><div class="stat-value t" id="doneVal">0 / 0</div><div class="prog-bg"><div class="prog-fill" id="progFill" style="width:0%"></div></div></div>
     </div>
 
     <div class="add-card">
-      <div class="add-card-head">+ Add a time block</div>
+      <div class="add-head">+ Add a time block</div>
       <div class="add-fields">
-        <div class="field-wrap">
-          <div class="field-label">What are you doing?</div>
-          <input class="field-input" id="t_name" type="text" placeholder="e.g. Morning walk, Study session…" maxlength="60" autocomplete="off"/>
-        </div>
-        <div class="fields-row">
-          <div class="field-wrap">
-            <div class="field-label">Start time</div>
-            <input class="field-input" id="t_start" type="time"/>
-          </div>
-          <div class="field-wrap">
-            <div class="field-label">End time (optional)</div>
-            <input class="field-input" id="t_end" type="time"/>
-          </div>
+        <div class="fw"><div class="fl">What are you doing?</div><input class="fi" id="t_name" type="text" placeholder="e.g. Morning walk, Study session…" maxlength="60" autocomplete="off"/></div>
+        <div class="frow">
+          <div class="fw"><div class="fl">Start time</div><input class="fi" id="t_start" type="time"/></div>
+          <div class="fw"><div class="fl">End time (optional)</div><input class="fi" id="t_end" type="time"/></div>
         </div>
         <div class="add-row">
-          <div style="flex:1;">
-            <div class="task-count-hint" id="countHint"></div>
-          </div>
-          <button class="add-task-btn" onclick="addTask()">Add →</button>
+          <div class="count-hint" id="countHint"></div>
+          <button class="add-btn" onclick="addTask()">Add →</button>
         </div>
       </div>
     </div>
 
-    <div class="sched-head">
-      <h2>Today's schedule</h2>
-      <button class="clear-all" onclick="clearAll()">Clear all</button>
-    </div>
+    <div class="sched-head"><h2>Today's schedule</h2><button class="clear-all" onclick="clearAll()">Clear all</button></div>
     <div class="task-list" id="taskList"></div>
-
   </div>
 
-  <footer class="app-footer">
-    <div class="wake-hint">
-      <div class="wake-dot"></div>
-      <span id="wakeHint">Reminders active</span>
-    </div>
-  </footer>
+  <footer class="app-footer"><div class="wake-hint"><div class="wake-dot"></div><span id="wakeHint">Reminders active</span></div></footer>
+</div>
+
+<!-- USER MENU -->
+<div id="userMenu">
+  <div class="um-name" id="um_name">—</div>
+  <div class="um-email" id="um_email">—</div>
+  <button class="um-btn" onclick="signOut()">Sign out</button>
+</div>
+
+<!-- ALARM OVERLAY -->
+<div id="alarmOverlay">
+  <div style="position:relative;display:flex;align-items:center;justify-content:center;width:200px;height:200px;">
+    <div class="alarm-ripple" style="animation-delay:0s"></div>
+    <div class="alarm-ripple" style="animation-delay:.7s"></div>
+    <div class="alarm-ring">⏰</div>
+  </div>
+  <div class="alarm-time" id="alarmTime">10:00</div>
+  <div class="alarm-task" id="alarmTask">Task</div>
+  <div class="alarm-sub">Time to lock in. Tap confirm to mark done.</div>
+  <div class="alarm-actions">
+    <button class="alarm-confirm" onclick="alarmConfirm()">✅ Done — I'm on it!</button>
+    <button class="alarm-snooze" onclick="alarmSnooze()">⏰ Snooze 5 minutes</button>
+  </div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script>
-// ── STATE ──────────────────────────────────────────────────────
-let profile = null;   // {name, wake, quote, targetCount}
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut }
+  from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+// ── FIREBASE CONFIG ─────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBNitYErbnD2SDGgOgCCnfPwZkaeUYveKs",
+  authDomain: "daylock-ce9b6.firebaseapp.com",
+  projectId: "daylock-ce9b6",
+  storageBucket: "daylock-ce9b6.firebasestorage.app",
+  messagingSenderId: "1228850231348",
+  appId: "1:1228850231348:web:25b2eaebb0c5c34f50f661",
+  measurementId: "G-R1CFM88HY3"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── STATE ───────────────────────────────────────────────────
+let profile = null;
 let tasks   = [];
 let alerted = new Set();
+let currentUser = null;
+let audioCtx = null;
+let alarmInterval = null;
+let currentAlarmTaskId = null;
+let snoozeUntil = {};
+let unsubTasks = null;
 
 const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const TODAY  = () => new Date().toDateString();
 
-// ── BOOT ──────────────────────────────────────────────────────
-function boot() {
-  profile = loadProfile();
-  if (!profile) { showScreen('onboarding'); return; }
-  loadTasks();
+// ── SERVICE WORKER ──────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(r => {
+    console.log('SW registered');
+  }).catch(e => console.log('SW error', e));
+}
+
+// ── FIREBASE AUTH ───────────────────────────────────────────
+window.signInWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    // onAuthStateChanged handles the rest
+  } catch(e) {
+    toast('Sign in failed — try again', 'warn');
+    console.error(e);
+  }
+};
+
+window.skipAuth = () => {
+  // finish onboarding without account
+  finishOnboarding();
+};
+
+window.signOut = async () => {
+  if (unsubTasks) unsubTasks();
+  await fbSignOut(auth);
+  currentUser = null;
+  toggleUserMenu(true);
+  toast('Signed out', 'warn');
+};
+
+window.toggleUserMenu = (forceClose) => {
+  const m = document.getElementById('userMenu');
+  if (forceClose) { m.classList.remove('open'); return; }
+  m.classList.toggle('open');
+};
+
+// Close menu clicking outside
+document.addEventListener('click', e => {
+  const menu = document.getElementById('userMenu');
+  const wrap = document.getElementById('userAvatarWrap');
+  if (!menu.contains(e.target) && !wrap.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// ── AUTH STATE CHANGE ───────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    renderUserAvatar(user);
+    // Load profile from Firestore
+    const profDoc = await getDoc(doc(db, 'users', user.uid, 'profile', 'data'));
+    if (profDoc.exists()) {
+      profile = profDoc.data();
+      // Merge name from Google if not set
+      if (!profile.name) profile.name = user.displayName?.split(' ')[0] || 'Friend';
+    } else if (profile) {
+      // Save local onboarding profile to Firestore
+      await setDoc(doc(db, 'users', user.uid, 'profile', 'data'), profile);
+    } else {
+      // New user via Google — use their name, still need wake/quote
+      profile = {
+        name: user.displayName?.split(' ')[0] || 'Friend',
+        wake: '07:00', quote: '', targetCount: 5
+      };
+      await setDoc(doc(db, 'users', user.uid, 'profile', 'data'), profile);
+    }
+
+    // Was in onboarding step4 (google sign in) — finish now
+    const step4 = document.getElementById('step4');
+    if (step4 && step4.classList.contains('active')) {
+      finishOnboarding();
+      return;
+    }
+
+    subscribeToTasks();
+    bootApp();
+
+  } else {
+    currentUser = null;
+    renderUserAvatar(null);
+    // No user — check local profile
+    profile = loadLocalProfile();
+    if (!profile) {
+      showScreen('onboarding');
+      document.getElementById('loadingScreen').classList.add('hidden');
+    } else {
+      bootApp();
+    }
+  }
+});
+
+// ── USER AVATAR ─────────────────────────────────────────────
+function renderUserAvatar(user) {
+  const wrap = document.getElementById('userAvatarWrap');
+  if (!wrap) return;
+  if (user && user.photoURL) {
+    wrap.innerHTML = `<img src="${user.photoURL}" class="user-avatar" referrerpolicy="no-referrer"/>`;
+  } else if (user) {
+    wrap.innerHTML = `<div class="user-avatar-placeholder">${(user.displayName||'?')[0]}</div>`;
+  } else {
+    wrap.innerHTML = `<div class="user-avatar-placeholder">👤</div>`;
+  }
+  if (user) {
+    document.getElementById('um_name').textContent = user.displayName || '';
+    document.getElementById('um_email').textContent = user.email || '';
+  }
+}
+
+// ── FIRESTORE TASKS ─────────────────────────────────────────
+function tasksRef() {
+  return collection(db, 'users', currentUser.uid, 'days', TODAY(), 'tasks');
+}
+
+function subscribeToTasks() {
+  if (!currentUser) return;
+  if (unsubTasks) unsubTasks();
+  unsubTasks = onSnapshot(
+    collection(db, 'users', currentUser.uid, 'days', TODAY(), 'tasks'),
+    snap => {
+      tasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      tasks.sort((a,b) => a.start.localeCompare(b.start));
+      renderTasks();
+      showSyncBanner('Synced ✓');
+    },
+    err => console.error('Firestore error', err)
+  );
+}
+
+async function saveTaskToCloud(task) {
+  if (!currentUser) return;
+  try {
+    await setDoc(doc(db, 'users', currentUser.uid, 'days', TODAY(), 'tasks', task.id), task);
+  } catch(e) { console.error('Save error', e); }
+}
+
+async function deleteTaskFromCloud(taskId) {
+  if (!currentUser) return;
+  try {
+    await deleteDoc(doc(db, 'users', currentUser.uid, 'days', TODAY(), 'tasks', taskId));
+  } catch(e) { console.error('Delete error', e); }
+}
+
+async function saveProfileToCloud() {
+  if (!currentUser || !profile) return;
+  try {
+    await setDoc(doc(db, 'users', currentUser.uid, 'profile', 'data'), profile);
+  } catch(e) { console.error(e); }
+}
+
+function showSyncBanner(msg) {
+  const b = document.getElementById('syncBanner');
+  const m = document.getElementById('syncMsg');
+  if (!b||!m) return;
+  m.textContent = msg;
+  b.classList.remove('hidden');
+  setTimeout(() => b.classList.add('hidden'), 3000);
+}
+
+// ── BOOT ────────────────────────────────────────────────────
+function bootApp() {
+  document.getElementById('loadingScreen').classList.add('hidden');
+  loadLocalTasks();
   loadAlerted();
   checkStreak();
 
   const lastActive = parseInt(localStorage.getItem('dl_lastactive') || '0');
   const away = Date.now() - lastActive;
 
-  // Return screen if away > 2h OR never set lastactive
   if (!lastActive || away > 2 * 3600 * 1000) {
-    setupReturnScreen();
+    setupReturn();
     showScreen('returnScreen');
   } else {
+    showScreen('__');
     launchApp();
   }
-
   localStorage.setItem('dl_lastactive', Date.now());
   setInterval(() => localStorage.setItem('dl_lastactive', Date.now()), 60000);
 }
 
-// ── SCREENS ───────────────────────────────────────────────────
 function showScreen(id) {
-  ['onboarding','returnScreen'].forEach(s => {
-    document.getElementById(s).classList.toggle('hidden', s !== id);
-  });
+  ['onboarding','returnScreen','loadingScreen'].forEach(s =>
+    document.getElementById(s).classList.toggle('hidden', s !== id)
+  );
 }
 
-// ── ONBOARDING STEPS ──────────────────────────────────────────
-let obData = {};
-
-function obNext(step) {
-  if (step === 1) {
-    const v = document.getElementById('ob_name').value.trim();
-    if (!v) { toast('Enter your name 👀','warn'); return; }
-    obData.name = v;
-  }
-  if (step === 2) {
-    obData.wake = document.getElementById('ob_wake').value || '07:00';
-  }
-  if (step === 3) {
-    obData.quote = document.getElementById('ob_quote').value.trim();
-  }
-
-  document.getElementById(`step${step}`).classList.remove('active');
-  document.getElementById(`step${step+1}`).classList.add('active');
-}
-
-function obSkipQuote() {
-  obData.quote = '';
+// ── ONBOARDING ──────────────────────────────────────────────
+let ob = {};
+window.obNext = (step) => {
+  if (step===1){const v=document.getElementById('ob_name').value.trim();if(!v){toast('Enter your name','warn');return;}ob.name=v;}
+  if (step===2){ob.wake=document.getElementById('ob_wake').value||'07:00';}
+  if (step===3){ob.quote=document.getElementById('ob_quote').value.trim();}
+  document.getElementById('step'+step).classList.remove('active');
+  document.getElementById('step'+(step+1)).classList.add('active');
+};
+window.obSkip = () => {
+  ob.quote='';
   document.getElementById('step3').classList.remove('active');
   document.getElementById('step4').classList.add('active');
-}
+};
 
-function obFinish() {
-  const raw = document.getElementById('ob_count').value;
-  const count = parseInt(raw);
-  if (!count || count < 1) { toast('Enter at least 1','warn'); return; }
-  obData.targetCount = Math.min(count, 30);
-
+function finishOnboarding() {
   profile = {
-    name: obData.name,
-    wake: obData.wake || '07:00',
-    quote: obData.quote || '',
-    targetCount: obData.targetCount
+    name: ob.name || currentUser?.displayName?.split(' ')[0] || 'Friend',
+    wake: ob.wake || '07:00',
+    quote: ob.quote || '',
+    targetCount: 5
   };
-  saveProfile();
+  saveLocalProfile();
+  saveProfileToCloud();
   checkStreak();
-  loadTasks();
+  loadLocalTasks();
+  showScreen('__');
   launchApp();
   toast(`Welcome, ${profile.name}! 🔒`, 'info');
-  if (Notification.permission !== 'granted') {
-    setTimeout(reqNotif, 1200);
-  }
+  if (Notification.permission !== 'granted') setTimeout(reqNotif, 1200);
 }
 
-// ── RETURN SCREEN ─────────────────────────────────────────────
-function setupReturnScreen() {
+// ── RETURN ──────────────────────────────────────────────────
+function setupReturn() {
   const h = new Date().getHours();
-  const label = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('ret_timeLabel').textContent = label;
+  document.getElementById('ret_label').textContent = h<12?'Good morning':h<17?'Good afternoon':'Good evening';
   document.getElementById('ret_name').textContent = profile.name;
-  const qEl = document.getElementById('ret_quote');
-  if (profile.quote) { qEl.textContent = `"${profile.quote}"`; qEl.style.display = ''; }
+  const q = document.getElementById('ret_quote');
+  if (profile.quote) { q.textContent=`"${profile.quote}"`;q.style.display=''; }
 }
-
-function goToApp(reuseYesterday) {
-  if (reuseYesterday) {
+window.goApp = (reuse) => {
+  if (reuse) {
     const prev = localStorage.getItem('dl_yesterday');
     if (prev) {
-      tasks = JSON.parse(prev).map(t => ({...t, done: false, id: Date.now() + Math.random()}));
-      tasks.sort((a,b) => a.start.localeCompare(b.start));
-      saveTasks();
-      toast('Yesterday\'s schedule loaded ♻️','ok');
-    } else {
-      toast('No previous schedule found','warn');
-    }
+      tasks = JSON.parse(prev).map(t=>({...t,done:false,id:Date.now()+Math.random()+''}));
+      tasks.sort((a,b)=>a.start.localeCompare(b.start));
+      saveLocalTasks();
+      if (currentUser) tasks.forEach(t => saveTaskToCloud(t));
+      toast("Yesterday's schedule loaded ♻️",'ok');
+    } else { toast('No previous schedule found','warn'); }
   }
-  showScreen('__none__'); // hide all overlays
+  showScreen('__');
   launchApp();
-}
+};
 
-// ── APP LAUNCH ────────────────────────────────────────────────
+// ── APP ──────────────────────────────────────────────────────
 function launchApp() {
-  showScreen('__none__');
   document.getElementById('app').classList.remove('hidden');
-  renderHero();
-  renderNotifBtn();
-  renderTasks();
+  if (currentUser) subscribeToTasks();
+  renderHero(); renderNotifBtn(); renderTasks();
   updateClock();
   setInterval(updateClock, 1000);
-  setInterval(checkAlerts, 20000);
+  setInterval(checkAlerts, 10000);
   checkAlerts();
   updateWakeHint();
 }
 
-// ── HERO ──────────────────────────────────────────────────────
 function renderHero() {
-  const h = new Date().getHours();
-  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-  const hustle = ['Lock in.','No excuses.','Stay consistent.','You got this.','Stay sharp.'];
-  const line = hustle[new Date().getDay() % hustle.length];
-  document.getElementById('heroGreeting').innerHTML =
-    `${greet}, <em style="color:var(--accent)">${profile.name}.</em><br>${line}`;
-
-  const d = new Date();
-  document.getElementById('heroDate').textContent =
-    `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
-
-  const qEl = document.getElementById('heroQuote');
-  if (profile.quote) {
-    qEl.textContent = `"${profile.quote}"`;
-    qEl.style.display = '';
-  }
+  const h=new Date().getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  const hustle=['Lock in.','No excuses.','Stay consistent.','You got this.','Stay sharp.'];
+  document.getElementById('heroGreet').innerHTML=`${greet}, <em style="color:var(--accent)">${profile.name}.</em><br>${hustle[new Date().getDay()%hustle.length]}`;
+  const d=new Date();
+  document.getElementById('heroDate').textContent=`${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  const q=document.getElementById('heroQuote');
+  if (profile.quote){q.textContent=`"${profile.quote}"`;q.style.display='';}
 }
 
 function updateClock() {
-  const now = new Date();
-  document.getElementById('liveClock').textContent =
-    now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
+  document.getElementById('liveClock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
 }
 
-// ── NOTIFICATIONS ─────────────────────────────────────────────
+// ── NOTIFICATIONS ────────────────────────────────────────────
 function renderNotifBtn() {
-  const btn = document.getElementById('notifBtn');
-  if (Notification.permission === 'granted') {
-    btn.textContent = '✅ Alerts on'; btn.classList.add('on');
-  } else if (Notification.permission === 'denied') {
-    btn.textContent = '🚫 Blocked';
-  }
+  const btn=document.getElementById('notifBtn');
+  if (!btn) return;
+  if (Notification.permission==='granted'){btn.textContent='✅ On';btn.classList.add('on');}
+  else if (Notification.permission==='denied'){btn.textContent='🚫';}
 }
-
-function reqNotif() {
-  if (!('Notification' in window)) { toast('Notifications not supported','warn'); return; }
-  Notification.requestPermission().then(p => {
+window.reqNotif = () => {
+  if(!('Notification' in window)){toast('Notifications not supported','warn');return;}
+  Notification.requestPermission().then(p=>{
     renderNotifBtn();
-    if (p === 'granted') {
-      toast('Notifications on! 🎉','ok');
-      fire('DayLock 🔒', `Hey ${profile.name}, I'll remind you when it's time.`);
-    } else {
-      toast('Please allow notifications for reminders','warn');
-    }
+    if(p==='granted'){toast('Notifications on! 🎉','ok');fire('DayLock 🔒',`Hey ${profile.name}, I'll remind you when it's time.`);}
+    else toast('Please allow notifications','warn');
   });
+};
+function fire(title,body,tag,taskId) {
+  if(Notification.permission!=='granted') return;
+  try {
+    const n=new Notification(title,{body,tag:tag||'dl',
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔒</text></svg>',
+      requireInteraction:true,data:{taskId}});
+    n.onclick=()=>{window.focus();n.close();if(taskId)triggerAlarm(taskId);};
+  }catch(e){}
 }
 
-function fire(title, body, tag) {
-  if (Notification.permission !== 'granted') return;
-  try { new Notification(title, {body, tag: tag||'dl', icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔒</text></svg>'}); }
-  catch(e) {}
-}
-
-// ── ALERT LOGIC ───────────────────────────────────────────────
+// ── ALERT CHECKER ────────────────────────────────────────────
 function checkAlerts() {
-  const now = new Date();
-  const nm = now.getHours()*60 + now.getMinutes();
-
-  // Morning wake nudge
+  const now=new Date(),nm=now.getHours()*60+now.getMinutes();
   if (profile) {
-    const [wh,wm] = profile.wake.split(':').map(Number);
-    const wakeM = wh*60+wm - 10;
-    const warnKey = `wake_${new Date().toDateString()}`;
-    if (nm === wakeM && !alerted.has(warnKey)) {
-      alerted.add(warnKey); saveAlerted();
-      fire('🌅 Morning nudge', `It's almost ${profile.wake}. Open DayLock and plan your day, ${profile.name}.`);
-    }
+    const [wh,wm]=profile.wake.split(':').map(Number);
+    const nudge=wh*60+wm-10;
+    const wk=`wake_${TODAY()}`;
+    if(nm===nudge&&!alerted.has(wk)){alerted.add(wk);saveAlerted();fire('🌅 Morning nudge',`Plan your day, ${profile.name}. Open DayLock.`);}
   }
-
-  tasks.forEach(t => {
-    if (t.done) return;
-    const [sh,sm] = t.start.split(':').map(Number);
-    const tm = sh*60+sm;
-    const diff = tm - nm;
-
-    const wk = `w5_${t.id}`;
-    const sk = `st_${t.id}`;
-
-    if (diff === 5 && !alerted.has(wk)) {
-      alerted.add(wk); saveAlerted();
-      fire(`⏰ In 5 mins`, `${t.name} starts at ${t.start}`, wk);
-      toast(`⏰ ${t.name} in 5 mins`, 'warn');
-    }
-    if (diff === 0 && !alerted.has(sk)) {
-      alerted.add(sk); saveAlerted();
-      fire(`🔒 Lock in now!`, `Time for: ${t.name}`, sk);
-      toast(`🔒 ${t.name} — NOW`, 'info');
-    }
+  tasks.forEach(t=>{
+    if(t.done) return;
+    if(snoozeUntil[t.id]&&Date.now()<snoozeUntil[t.id]) return;
+    const [sh,sm]=t.start.split(':').map(Number),tm=sh*60+sm,diff=tm-nm;
+    const wk=`w5_${t.id}`,sk=`st_${t.id}`;
+    if(diff>=4&&diff<6&&!alerted.has(wk)){alerted.add(wk);saveAlerted();fire(`⏰ In 5 mins`,`${t.name} starts at ${t.start}`,wk,t.id);toast(`⏰ ${t.name} in 5 mins`,'warn');}
+    if(diff>=-1&&diff<=0&&!alerted.has(sk)){alerted.add(sk);saveAlerted();fire(`🔒 Lock in!`,`Time for: ${t.name}`,sk,t.id);triggerAlarm(t.id);}
   });
-
-  renderTasks(); // refresh live status
-}
-
-// ── TASKS ─────────────────────────────────────────────────────
-function addTask() {
-  const name  = document.getElementById('t_name').value.trim();
-  const start = document.getElementById('t_start').value;
-  const end   = document.getElementById('t_end').value;
-
-  if (!name)  { toast('Give this block a name','warn'); return; }
-  if (!start) { toast('Set a start time','warn'); return; }
-
-  const task = { id: Date.now()+'', name, start, end: end||'', done: false };
-  tasks.push(task);
-  tasks.sort((a,b) => a.start.localeCompare(b.start));
-  saveTasks();
   renderTasks();
-
-  document.getElementById('t_name').value  = '';
-  document.getElementById('t_start').value = '';
-  document.getElementById('t_end').value   = '';
-  toast(`Added: ${name}`, 'ok');
 }
 
-function toggleDone(id) {
-  const t = tasks.find(x=>x.id===id);
-  if (t) { t.done=!t.done; saveTasks(); renderTasks(); }
+// ── ALARM ───────────────────────────────────────────────────
+function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playAlarm(){
+  try{
+    const ctx=getAudioCtx();
+    [{f:880,s:0,d:.15},{f:880,s:.2,d:.15},{f:1100,s:.4,d:.25},{f:880,s:.75,d:.15},{f:1100,s:1.1,d:.35}].forEach(({f,s,d})=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;o.type='sine';
+      g.gain.setValueAtTime(0,ctx.currentTime+s);
+      g.gain.linearRampToValueAtTime(.35,ctx.currentTime+s+.02);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+s+d);
+      o.start(ctx.currentTime+s);o.stop(ctx.currentTime+s+d+.05);
+    });
+  }catch(e){}
 }
-function deleteTask(id) {
-  tasks = tasks.filter(x=>x.id!==id);
-  saveTasks(); renderTasks();
+function stopAlarm(){if(audioCtx){audioCtx.close();audioCtx=null;}clearInterval(alarmInterval);}
+
+function triggerAlarm(taskId) {
+  const task=tasks.find(t=>t.id===taskId);
+  if(!task||task.done) return;
+  currentAlarmTaskId=taskId;
+  document.getElementById('alarmTime').textContent=task.start;
+  document.getElementById('alarmTask').textContent=task.name;
+  document.getElementById('alarmOverlay').classList.add('active');
+  playAlarm();
+  alarmInterval=setInterval(playAlarm,2200);
+  if(navigator.vibrate)navigator.vibrate([300,100,300,100,300]);
 }
-function clearAll() {
-  if (!tasks.length) return;
-  if (confirm('Clear all tasks for today?')) {
-    // save as yesterday before clearing
-    localStorage.setItem('dl_yesterday', JSON.stringify(tasks));
-    tasks=[]; alerted=new Set(); saveAlerted(); saveTasks(); renderTasks();
-    toast('Cleared. Saved as yesterday\'s schedule.','warn');
+window.alarmConfirm=()=>{
+  stopAlarm();
+  document.getElementById('alarmOverlay').classList.remove('active');
+  if(currentAlarmTaskId){markDone(currentAlarmTaskId);toast('Task done ✅','ok');}
+  currentAlarmTaskId=null;
+};
+window.alarmSnooze=()=>{
+  stopAlarm();
+  document.getElementById('alarmOverlay').classList.remove('active');
+  if(currentAlarmTaskId){
+    snoozeUntil[currentAlarmTaskId]=Date.now()+5*60*1000;
+    alerted.delete(`st_${currentAlarmTaskId}`);saveAlerted();
+    toast('Snoozed 5 mins ⏰','warn');
   }
+  currentAlarmTaskId=null;
+};
+
+// ── TASKS ────────────────────────────────────────────────────
+window.addTask = async () => {
+  const name=document.getElementById('t_name').value.trim();
+  const start=document.getElementById('t_start').value;
+  const end=document.getElementById('t_end').value;
+  if(!name){toast('Give this block a name','warn');return;}
+  if(!start){toast('Set a start time','warn');return;}
+  const task={id:Date.now()+'',name,start,end:end||'',done:false};
+  if(!currentUser){
+    tasks.push(task);tasks.sort((a,b)=>a.start.localeCompare(b.start));
+    saveLocalTasks();renderTasks();
+  } else {
+    await saveTaskToCloud(task); // realtime listener updates UI
+  }
+  document.getElementById('t_name').value='';
+  document.getElementById('t_start').value='';
+  document.getElementById('t_end').value='';
+  toast(`Added: ${name}`,'ok');
+};
+
+function markDone(id){
+  const t=tasks.find(x=>x.id===id);
+  if(t){t.done=true;if(currentUser)saveTaskToCloud(t);else{saveLocalTasks();renderTasks();}}
+}
+window.toggleDone=(id)=>{
+  const t=tasks.find(x=>x.id===id);
+  if(t){t.done=!t.done;if(currentUser)saveTaskToCloud(t);else{saveLocalTasks();renderTasks();}}
+};
+window.deleteTask=async(id)=>{
+  tasks=tasks.filter(x=>x.id!==id);
+  if(currentUser){await deleteTaskFromCloud(id);}
+  else{saveLocalTasks();renderTasks();}
+};
+window.clearAll=()=>{
+  if(!tasks.length) return;
+  if(confirm('Clear all tasks for today?')){
+    localStorage.setItem('dl_yesterday',JSON.stringify(tasks));
+    if(currentUser){tasks.forEach(t=>deleteTaskFromCloud(t.id));}
+    tasks=[];alerted=new Set();saveAlerted();
+    if(!currentUser){saveLocalTasks();renderTasks();}
+    toast('Cleared ♻️','warn');
+  }
+};
+
+function getStatus(t){
+  if(t.done)return'done';
+  const nm=new Date().getHours()*60+new Date().getMinutes();
+  const[sh,sm]=t.start.split(':').map(Number),tm=sh*60+sm,diff=tm-nm;
+  if(diff<=0){if(t.end){const[eh,em]=t.end.split(':').map(Number);if(nm<eh*60+em)return'now';}return'now';}
+  if(diff<=5)return'soon';if(diff<=30)return'up';return'future';
+}
+function durLabel(s,e){
+  if(!e)return'';
+  const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number),d=(eh*60+em)-(sh*60+sm);
+  return d<=0?'':d<60?`${d}m`:`${Math.floor(d/60)}h${d%60?` ${d%60}m`:''}`;
 }
 
-function getStatus(t) {
-  if (t.done) return 'done';
-  const now=new Date(), nm=now.getHours()*60+now.getMinutes();
-  const [sh,sm]=t.start.split(':').map(Number), tm=sh*60+sm;
-  const diff=tm-nm;
-  if (diff<=0) {
-    if (t.end) {
-      const [eh,em]=t.end.split(':').map(Number);
-      if (nm < eh*60+em) return 'now';
-    }
-    return 'now';
-  }
-  if (diff<=5) return 'soon';
-  if (diff<=30) return 'up';
-  return 'future';
-}
-
-function durLabel(s,e) {
-  if (!e) return '';
-  const [sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);
-  const d=(eh*60+em)-(sh*60+sm);
-  if (d<=0) return '';
-  return d<60 ? `${d}m` : `${Math.floor(d/60)}h${d%60?` ${d%60}m`:''}`;
-}
-
-function renderTasks() {
-  const list = document.getElementById('taskList');
-  const done = tasks.filter(t=>t.done).length;
-  const total = tasks.length;
-
-  // stats
-  document.getElementById('doneVal').textContent = `${done} / ${total}`;
-  const pct = total ? Math.round(done/total*100) : 0;
-  document.getElementById('progFill').style.width = pct+'%';
-
-  // count hint
-  const hint = document.getElementById('countHint');
-  if (profile && profile.targetCount) {
-    const rem = profile.targetCount - total;
-    if (rem > 0) {
-      hint.textContent = `${total} added · ${rem} more suggested`;
-      hint.className = 'task-count-hint';
-    } else {
-      hint.textContent = `${total} blocks · goal reached ✓`;
-      hint.className = 'task-count-hint ok';
-    }
-  }
-
-  if (!total) {
-    list.innerHTML = `<div class="empty-wrap">
-      <div class="eico">📋</div>
-      <p>No blocks yet.<br>Add your first time block above —<br>DayLock will remind you.</p>
-    </div>`;
-    return;
-  }
-
-  const badges = {
-    now:    '<span class="t-badge b-now">● Now</span>',
-    soon:   '<span class="t-badge b-soon pulse">⚡ Soon</span>',
-    up:     '<span class="t-badge b-up">↑ Up next</span>',
-    done:   '<span class="t-badge b-done">✓ Done</span>',
-    future: ''
-  };
-
-  list.innerHTML = tasks.map(t => {
-    const st = getStatus(t);
-    const range = t.end ? `${t.start}–${t.end}` : t.start;
-    const dur   = durLabel(t.start, t.end);
-    return `<div class="task-card s-${st}">
-      <div class="t-check" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div>
-      <div class="t-time-col">
-        <div class="t-time">${range}</div>
-        ${badges[st]||''}
-      </div>
-      <div class="t-body">
-        <div class="t-name">${t.name}</div>
-        ${dur ? `<div class="t-dur">${dur}</div>` : ''}
-      </div>
-      <button class="t-del" onclick="deleteTask('${t.id}')">✕</button>
-    </div>`;
+function renderTasks(){
+  const list=document.getElementById('taskList');if(!list)return;
+  const done=tasks.filter(t=>t.done).length,total=tasks.length;
+  const dv=document.getElementById('doneVal');if(dv)dv.textContent=`${done} / ${total}`;
+  const pf=document.getElementById('progFill');if(pf)pf.style.width=(total?Math.round(done/total*100):0)+'%';
+  const hint=document.getElementById('countHint');
+  if(hint&&profile?.targetCount){const rem=profile.targetCount-total;hint.textContent=rem>0?`${total} added · ${rem} more suggested`:`${total} blocks · goal reached ✓`;}
+  if(!total){list.innerHTML=`<div class="empty-wrap"><div class="eico">📋</div><p>No blocks yet.<br>Add your first time block above —<br>DayLock will remind you.</p></div>`;return;}
+  const badges={now:'<span class="t-badge b-now">● Now</span>',soon:'<span class="t-badge b-soon">⚡ Soon</span>',up:'<span class="t-badge b-up">↑ Up next</span>',done:'<span class="t-badge b-done">✓ Done</span>',future:''};
+  list.innerHTML=tasks.map(t=>{
+    const st=getStatus(t),range=t.end?`${t.start}–${t.end}`:t.start,dur=durLabel(t.start,t.end);
+    return`<div class="task-card s-${st}"><div class="t-check" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div><div class="t-tcol"><div class="t-time">${range}</div>${badges[st]||''}</div><div class="t-body"><div class="t-name">${t.name}</div>${dur?`<div class="t-dur">${dur}</div>`:''}</div><button class="t-del" onclick="deleteTask('${t.id}')">✕</button></div>`;
   }).join('');
 }
 
-// ── WAKE HINT ─────────────────────────────────────────────────
-function updateWakeHint() {
-  if (!profile) return;
-  const [h,m] = profile.wake.split(':').map(Number);
-  const wm = h*60+m-10;
-  const wh = Math.floor(wm/60), wmin = wm%60;
-  document.getElementById('wakeHint').textContent =
-    `Morning nudge at ${String(wh).padStart(2,'0')}:${String(wmin).padStart(2,'0')} · Reminders active`;
+// ── STREAK + WAKE ────────────────────────────────────────────
+function checkStreak(){
+  const today=TODAY(),last=localStorage.getItem('dl_lastvisit');
+  let s=parseInt(localStorage.getItem('dl_streak')||'0');
+  if(last!==today){const y=new Date();y.setDate(y.getDate()-1);s=last===y.toDateString()?s+1:1;localStorage.setItem('dl_streak',s);localStorage.setItem('dl_lastvisit',today);}
+  const el=document.getElementById('streakVal');if(el)el.textContent=s;
+}
+function updateWakeHint(){
+  if(!profile)return;
+  const[h,m]=profile.wake.split(':').map(Number),wm=h*60+m-10,wh=Math.floor(wm/60),wmin=wm%60;
+  const el=document.getElementById('wakeHint');
+  if(el)el.textContent=`Nudge at ${String(wh).padStart(2,'0')}:${String(wmin).padStart(2,'0')} · ${currentUser?'Cloud sync on':'Local mode'}`;
 }
 
-// ── STREAK ────────────────────────────────────────────────────
-function checkStreak() {
-  const today = new Date().toDateString();
-  const last  = localStorage.getItem('dl_lastvisit');
-  let   s     = parseInt(localStorage.getItem('dl_streak')||'0');
-  if (last !== today) {
-    const yest = new Date(); yest.setDate(yest.getDate()-1);
-    s = last === yest.toDateString() ? s+1 : 1;
-    localStorage.setItem('dl_streak', s);
-    localStorage.setItem('dl_lastvisit', today);
-  }
-  document.getElementById('streakVal').textContent = s;
+// ── LOCAL STORAGE ────────────────────────────────────────────
+function saveLocalProfile(){localStorage.setItem('dl_profile',JSON.stringify(profile));}
+function loadLocalProfile(){const p=localStorage.getItem('dl_profile');return p?JSON.parse(p):null;}
+function saveLocalTasks(){const today=TODAY();localStorage.setItem('dl_tasks',JSON.stringify(tasks));localStorage.setItem('dl_taskdate',today);}
+function loadLocalTasks(){
+  const today=TODAY(),date=localStorage.getItem('dl_taskdate');
+  if(date===today){const r=localStorage.getItem('dl_tasks');if(!currentUser)tasks=r?JSON.parse(r):[];}
+  else{const r=localStorage.getItem('dl_tasks');if(r)localStorage.setItem('dl_yesterday',r);if(!currentUser)tasks=[];localStorage.setItem('dl_taskdate',today);}
+}
+function saveAlerted(){localStorage.setItem('dl_alerted',JSON.stringify([...alerted]));}
+function loadAlerted(){
+  const today=TODAY();
+  if(localStorage.getItem('dl_alertdate')!==today){alerted=new Set();localStorage.setItem('dl_alertdate',today);return;}
+  const r=localStorage.getItem('dl_alerted');alerted=r?new Set(JSON.parse(r)):new Set();
 }
 
-// ── STORAGE ───────────────────────────────────────────────────
-function saveProfile() { localStorage.setItem('dl_profile', JSON.stringify(profile)); }
-function loadProfile() {
-  const p = localStorage.getItem('dl_profile');
-  return p ? JSON.parse(p) : null;
-}
-function saveTasks() {
-  const today = new Date().toDateString();
-  localStorage.setItem('dl_tasks', JSON.stringify(tasks));
-  localStorage.setItem('dl_taskdate', today);
-}
-function loadTasks() {
-  const today = new Date().toDateString();
-  const date  = localStorage.getItem('dl_taskdate');
-  if (date === today) {
-    // save as yesterday before loading today (only if different day coming)
-    const raw = localStorage.getItem('dl_tasks');
-    tasks = raw ? JSON.parse(raw) : [];
-  } else {
-    // new day: archive as yesterday
-    const raw = localStorage.getItem('dl_tasks');
-    if (raw) localStorage.setItem('dl_yesterday', raw);
-    tasks = [];
-    localStorage.setItem('dl_taskdate', today);
-  }
-}
-function saveAlerted() { localStorage.setItem('dl_alerted', JSON.stringify([...alerted])); }
-function loadAlerted() {
-  const raw = localStorage.getItem('dl_alerted');
-  alerted = raw ? new Set(JSON.parse(raw)) : new Set();
-  // reset alerted on new day
-  const adate = localStorage.getItem('dl_alertdate');
-  const today = new Date().toDateString();
-  if (adate !== today) { alerted = new Set(); localStorage.setItem('dl_alertdate', today); }
-}
+// ── TOAST ────────────────────────────────────────────────────
+window.toast=(msg,type='')=>{
+  const w=document.getElementById('toastWrap'),t=document.createElement('div');
+  t.className=`toast ${type}`;t.textContent=msg;w.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+};
 
-// ── TOAST ─────────────────────────────────────────────────────
-function toast(msg, type='') {
-  const w = document.getElementById('toastWrap');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`; t.textContent = msg;
-  w.appendChild(t);
-  setTimeout(()=>t.remove(), 3000);
-}
-
-// ── KEYBOARD ──────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key==='Enter' && document.activeElement.id==='t_name') addTask();
-  if (e.key==='Enter' && document.activeElement.id==='ob_name') obNext(1);
+// ── KEYBOARD ─────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.activeElement.id==='t_name')window.addTask();
+  if(e.key==='Enter'&&document.activeElement.id==='ob_name')window.obNext(1);
+  if(e.key==='Escape'&&currentAlarmTaskId)window.alarmSnooze();
 });
 
-// ── GO ────────────────────────────────────────────────────────
-boot();
 </script>
 </body>
 </html>
