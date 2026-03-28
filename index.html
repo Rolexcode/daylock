@@ -351,6 +351,8 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signO
   from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, onSnapshot }
   from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getMessaging, getToken, onMessage }
+  from "https://www.gstatic.com/firebasejs/11.6.0/firebase-messaging.js";
 
 // ── FIREBASE CONFIG ─────────────────────────────────────────
 const firebaseConfig = {
@@ -366,6 +368,42 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
+const messaging = getMessaging(app);
+
+const VAPID_KEY = 'BNFAE6KFO86GFob2AdTHp4G5n5_IPy7cWPfTqDUjmJGNBJvbd7QkQ5CVhlhTYpQtUnOgDHRlRDGO_0hwwpZfA8U';
+
+// Handle foreground FCM messages
+onMessage(messaging, payload => {
+  const { title, body, taskId } = payload.data || {};
+  toast(`🔔 ${title}: ${body}`, 'info');
+  if (taskId) triggerAlarm(taskId);
+});
+
+// Get FCM token and save to Firestore
+async function setupFCM(uid) {
+  try {
+    const swReg = await navigator.serviceWorker.ready;
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    if (token && uid) {
+      await setDoc(doc(db, 'users', uid, 'tokens', 'fcm'), { token, updated: Date.now() });
+      console.log('FCM token saved');
+    }
+    return token;
+  } catch(e) {
+    console.log('FCM setup error:', e);
+  }
+}
+
+// Schedule FCM-style local push via SW for offline support
+async function scheduleLocalPush(task) {
+  if (!('serviceWorker' in navigator)) return;
+  const reg = await navigator.serviceWorker.ready;
+  // Store scheduled tasks in SW scope via postMessage
+  reg.active?.postMessage({
+    type: 'SCHEDULE_TASK',
+    task: { id: task.id, name: task.name, start: task.start }
+  });
+}
 
 // ── STATE ───────────────────────────────────────────────────
 let profile = null;
@@ -505,7 +543,10 @@ function subscribeToTasks() {
     collection(db, 'users', currentUser.uid, 'days', TODAY(), 'tasks'),
     snap => {
       tasks = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      tasks.sort((a,b) => a.start.localeCompare(b.start));
+      tasks.sort((a,b) => {
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return a.start.localeCompare(b.start);
+      });
       renderTasks();
       showSyncBanner('Synced ✓');
     },
@@ -661,9 +702,16 @@ function renderNotifBtn() {
 }
 window.reqNotif = () => {
   if(!('Notification' in window)){toast('Notifications not supported','warn');return;}
-  Notification.requestPermission().then(p=>{
+  Notification.requestPermission().then(async p=>{
     renderNotifBtn();
-    if(p==='granted'){toast('Notifications on! 🎉','ok');fire('DayLock 🔒',`Hey ${profile.name}, I'll remind you when it's time.`);}
+    if(p==='granted'){
+      toast('Notifications on! 🎉','ok');
+      fire('DayLock 🔒',`Hey ${profile.name}, I'll remind you when it's time.`);
+      // Setup FCM token
+      const uid = currentUser?.uid || 'anon_' + (localStorage.getItem('dl_anonid') || Date.now());
+      if (!currentUser) localStorage.setItem('dl_anonid', uid);
+      await setupFCM(uid);
+    }
     else toast('Please allow notifications','warn');
   });
 };
@@ -752,7 +800,11 @@ window.addTask = async () => {
   if(!start){toast('Set a start time','warn');return;}
   const task={id:Date.now()+'',name,start,end:end||'',done:false};
   if(!currentUser){
-    tasks.push(task);tasks.sort((a,b)=>a.start.localeCompare(b.start));
+    tasks.push(task);
+    tasks.sort((a,b) => {
+      if(a.done !== b.done) return a.done ? 1 : -1;
+      return a.start.localeCompare(b.start);
+    });
     saveLocalTasks();renderTasks();
   } else {
     await saveTaskToCloud(task); // realtime listener updates UI
