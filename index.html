@@ -149,6 +149,13 @@ input[type="time"].fi{font-family:'DM Mono',monospace;}
 .t-dur{font-size:.7rem;color:var(--muted);margin-top:2px;}
 .t-del{background:none;border:none;color:var(--muted);font-size:.85rem;cursor:pointer;padding:4px;border-radius:4px;transition:color .2s;flex-shrink:0;}
 .t-del:hover{color:var(--danger);}
+.t-cal{background:none;border:1px solid var(--border);color:var(--muted);font-size:.68rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;flex-shrink:0;white-space:nowrap;letter-spacing:.03em;}
+.t-cal:hover{border-color:var(--teal);color:var(--teal);background:rgba(71,255,224,.06);}
+.t-cal.added{border-color:var(--teal);color:var(--teal);}
+/* Cal tip banner */
+.cal-tip{background:rgba(71,255,224,.05);border:1px solid rgba(71,255,224,.12);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.78rem;color:var(--teal);line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
+.cal-tip.hidden{display:none;}
+.cal-tip-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
 
 /* footer */
 .app-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,16,.95);border-top:1px solid var(--border);padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:50;}
@@ -302,6 +309,10 @@ input[type="time"].fi{font-family:'DM Mono',monospace;}
     </div>
 
     <div class="sched-head"><h2>Today's schedule</h2><button class="clear-all" onclick="clearAll()">Clear all</button></div>
+    <div class="cal-tip" id="calTip">
+      <div class="cal-tip-icon">📅</div>
+      <div>Tap <strong>+ Cal</strong> on any task → saves to Google Calendar → your phone alarm fires even offline &amp; outside the browser.</div>
+    </div>
     <div class="task-list" id="taskList"></div>
   </div>
 
@@ -789,6 +800,46 @@ function durLabel(s,e){
   return d<=0?'':d<60?`${d}m`:`${Math.floor(d/60)}h${d%60?` ${d%60}m`:''}`;
 }
 
+// ── GOOGLE CALENDAR LINK ─────────────────────────────────────
+let calAdded = new Set(JSON.parse(localStorage.getItem('dl_cal')||'[]'));
+function saveCalAdded(){localStorage.setItem('dl_cal',JSON.stringify([...calAdded]));}
+
+function gcalUrl(task){
+  const today=new Date();
+  const dateStr=today.toISOString().slice(0,10).replace(/-/g,'');
+  const fmt=(t,fallback)=>{
+    const[h,m]=(t||fallback).split(':').map(Number);
+    return `${dateStr}T${String(h).padStart(2,'0')}${String(m).padStart(2,'0')}00`;
+  };
+  // end defaults to start+1h if not set
+  let endTime=task.end;
+  if(!endTime){
+    const[sh,sm]=task.start.split(':').map(Number);
+    const eh=sh+1,em=sm;
+    endTime=`${String(eh).padStart(2,'0')}:${String(em).padStart(2,'0')}`;
+  }
+  const start=fmt(task.start,task.start);
+  const end=fmt(endTime,endTime);
+  const details=encodeURIComponent(`DayLock reminder — open dayfocus.vercel.app to mark done ✅`);
+  const title=encodeURIComponent(task.name);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&reminders=popup:5`;
+}
+
+window.addToCalendar=(id)=>{
+  const task=tasks.find(t=>t.id===id);
+  if(!task)return;
+  window.open(gcalUrl(task),'_blank');
+  calAdded.add(id);saveCalAdded();
+  // Update just this button
+  const btn=document.getElementById('cal_'+id);
+  if(btn){btn.textContent='✅ Cal';btn.classList.add('added');}
+  toast('Opening Google Calendar 📅','ok');
+  // Hide tip after first use
+  const tip=document.getElementById('calTip');
+  if(tip)tip.classList.add('hidden');
+  localStorage.setItem('dl_caltip','hidden');
+};
+
 function renderTasks(){
   const list=document.getElementById('taskList');if(!list)return;
   const done=tasks.filter(t=>t.done).length,total=tasks.length;
@@ -796,11 +847,28 @@ function renderTasks(){
   const pf=document.getElementById('progFill');if(pf)pf.style.width=(total?Math.round(done/total*100):0)+'%';
   const hint=document.getElementById('countHint');
   if(hint&&profile?.targetCount){const rem=profile.targetCount-total;hint.textContent=rem>0?`${total} added · ${rem} more suggested`:`${total} blocks · goal reached ✓`;}
-  if(!total){list.innerHTML=`<div class="empty-wrap"><div class="eico">📋</div><p>No blocks yet.<br>Add your first time block above —<br>DayLock will remind you.</p></div>`;return;}
+
+  // Hide cal tip if already used
+  const tip=document.getElementById('calTip');
+  if(tip&&localStorage.getItem('dl_caltip')==='hidden')tip.classList.add('hidden');
+
+  if(!total){
+    list.innerHTML=`<div class="empty-wrap"><div class="eico">📋</div><p>No blocks yet.<br>Add your first time block above —<br>DayLock will remind you.</p></div>`;
+    const tip=document.getElementById('calTip');if(tip)tip.classList.add('hidden');
+    return;
+  }
   const badges={now:'<span class="t-badge b-now">● Now</span>',soon:'<span class="t-badge b-soon">⚡ Soon</span>',up:'<span class="t-badge b-up">↑ Up next</span>',done:'<span class="t-badge b-done">✓ Done</span>',future:''};
   list.innerHTML=tasks.map(t=>{
     const st=getStatus(t),range=t.end?`${t.start}–${t.end}`:t.start,dur=durLabel(t.start,t.end);
-    return`<div class="task-card s-${st}"><div class="t-check" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div><div class="t-tcol"><div class="t-time">${range}</div>${badges[st]||''}</div><div class="t-body"><div class="t-name">${t.name}</div>${dur?`<div class="t-dur">${dur}</div>`:''}</div><button class="t-del" onclick="deleteTask('${t.id}')">✕</button></div>`;
+    const calDone=calAdded.has(t.id);
+    const calBtn=`<button id="cal_${t.id}" class="t-cal${calDone?' added':''}" onclick="addToCalendar('${t.id}')" title="Add to Google Calendar">${calDone?'✅ Cal':'+ Cal'}</button>`;
+    return`<div class="task-card s-${st}">
+      <div class="t-check" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div>
+      <div class="t-tcol"><div class="t-time">${range}</div>${badges[st]||''}</div>
+      <div class="t-body"><div class="t-name">${t.name}</div>${dur?`<div class="t-dur">${dur}</div>`:''}</div>
+      ${calBtn}
+      <button class="t-del" onclick="deleteTask('${t.id}')">✕</button>
+    </div>`;
   }).join('');
 }
 
